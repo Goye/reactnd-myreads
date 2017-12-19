@@ -6,17 +6,22 @@ import BookNode from "./BookNode"
 class SearchPage extends Component {
     state = {
         books: null,
-        valueToSearch: ""
+        valueToSearch: "",
+        queryHasError: false
     }
 
     queryUpdated = async (valueToSearch) => {
         const books = await BooksAPI.search(valueToSearch);
-        if (!books) return;
-        if (books.error) {
-            console.error(books.error);
+        if (!books || books.error) {
+            if (books && books.error) console.error(books.error);
+            this.setState({
+                books: null,
+                queryHasError: true
+            });
         } else {
             this.setState({
-                books
+                books,
+                queryHasError: false
             });
         }
     }
@@ -30,8 +35,10 @@ class SearchPage extends Component {
     }
 
     render() {
-        const { books } = this.state
+        const { books, queryHasError } = this.state
         const { shelves } = this.props
+        console.log('books', books);
+        console.log('queryHasError', queryHasError);
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -53,6 +60,7 @@ class SearchPage extends Component {
                         <Link to="/">Back to main page</Link>
                     </div>
                     <ol className="books-grid">
+                        {queryHasError && <span>No results were found for your search.</span>}
                         {books && books.length &&
                             books.map(book => (
                                 <BookNode

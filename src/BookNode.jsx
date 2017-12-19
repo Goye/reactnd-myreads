@@ -1,4 +1,6 @@
 import React, { Component } from "react"
+//TODO replace fixed width & height
+const noCoverUrl = 'http://via.placeholder.com/128x193?text=No%20Cover';
 
 class BookNode extends Component {
 
@@ -12,7 +14,7 @@ class BookNode extends Component {
     render() {
         const { data, shelfId } = this.props
         const thumbnail = data && data.imageLinks ?
-            data.imageLinks.thumbnail : null;
+            data.imageLinks.thumbnail : noCoverUrl;
         if (!data) return null;
         return (
             <div className="book">
@@ -41,11 +43,7 @@ class BookNode extends Component {
                     </div>
                 </div>
                 <div className="book-title">{data.title}</div>
-                <div className="book-authors">
-                    {data.authors && data.authors.length > 0 ?
-                        data.authors[0] : null
-                    }
-                </div>
+                <div className="book-authors">{data.authors && data.authors.join(', ')}</div>
             </div>
         );
     }
